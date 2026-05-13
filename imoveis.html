@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imóveis | Fabelle</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-bottom: 8rem;
+        }
+
+        .property-card {
+            display: block;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 2rem;
+            transition: opacity 0.3s;
+        }
+
+        .property-card:hover {
+            opacity: 0.8;
+        }
+
+        .property-image-wrapper {
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            background-color: #eee;
+        }
+
+        .property-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .property-card:hover .property-image {
+            transform: scale(1.03);
+        }
+
+        .property-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .property-status {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.3rem 0.8rem;
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .property-status.vendido {
+            background-color: var(--color-accent-dark);
+        }
+
+        .property-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-location {
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+        }
+
+        .property-specs {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .property-price {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--color-text-light);
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .property-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar scrolled" id="navbar">
+        <a href="index.html" class="logo">FABELLE</a>
+        <nav class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="imoveis.html">Imóveis</a>
+            <a href="contato.html">Contato</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>Nosso Portfólio</h1>
+        <p>Explore a coleção mais exclusiva de imóveis do país.</p>
+    </div>
+
+    <main class="container">
+        <div class="property-grid" id="property-grid">
+            <!-- Loaded via JS -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0; padding-top: 0; border: none;">
+                &copy; 2026 Fabelle Imóveis de Alto Padrão. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const properties = getProperties();
+            const grid = document.getElementById('property-grid');
+
+            if (properties.length === 0) {
+                grid.innerHTML = '<div class="empty-state">Nenhum imóvel disponível no momento.</div>';
+                return;
+            }
+
+            properties.forEach(prop => {
+                const isVendido = prop.status.toLowerCase() === 'vendido';
+                grid.innerHTML += `
+                    <a href="imovel.html?id=${prop.id}" class="property-card">
+                        <div class="property-image-wrapper">
+                            <img src="${prop.mainImage || 'https://via.placeholder.com/800x600?text=Sem+Imagem'}" alt="${prop.title}" class="property-image">
+                        </div>
+                        <div class="property-meta">
+                            <span class="property-status ${isVendido ? 'vendido' : ''}">${prop.status}</span>
+                            <span class="property-price">${prop.price}</span>
+                        </div>
+                        <h3 class="property-title">${prop.title}</h3>
+                        <p class="property-location">${prop.location}</p>
+                        <div class="property-specs">
+                            <span>${prop.area}</span> • 
+                            <span>${prop.bedrooms} Quartos</span> • 
+                            <span>${prop.bathrooms} Banhos</span> • 
+                            <span>${prop.parking} Vagas</span>
+                        </div>
+                    </a>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>

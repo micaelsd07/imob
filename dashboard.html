@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Fabelle</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <script>
+        // Protect route
+        if (sessionStorage.getItem('fabelle_admin_auth') !== 'true') {
+            window.location.href = 'admin.html';
+        }
+    </script>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                FABELLE
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="active">Imóveis</a>
+                <a href="#" onclick="logout()">Sair</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h2>Gerenciamento de Imóveis</h2>
+                <button class="btn" style="width: auto;" onclick="openModal()">+ Novo Imóvel</button>
+            </header>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Localização</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <!-- Modal Form -->
+    <div class="modal" id="property-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Adicionar Imóvel</h3>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="property-form">
+                <input type="hidden" id="prop-id">
+                
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="prop-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="prop-desc" rows="4" style="width: 100%; padding: 0.8rem; border: 1px solid var(--admin-border);" required></textarea>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Valor</label>
+                        <input type="text" id="prop-price" required placeholder="R$ 0.000.000">
+                    </div>
+                    <div class="form-group">
+                        <label>Localização</label>
+                        <input type="text" id="prop-location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Área (m²)</label>
+                        <input type="text" id="prop-area" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quartos</label>
+                        <input type="number" id="prop-bedrooms" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Banhos</label>
+                        <input type="number" id="prop-bathrooms" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Vagas</label>
+                        <input type="number" id="prop-parking" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Diferenciais (Separados por vírgula)</label>
+                    <input type="text" id="prop-features" required placeholder="Piscina, Academia, etc">
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Caminho da Imagem</label>
+                        <input type="text" id="prop-image" required placeholder="Ex: imagens/nome.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="prop-status" style="width: 100%; padding: 0.8rem; border: 1px solid var(--admin-border);">
+                            <option value="Disponível">Disponível</option>
+                            <option value="Vendido">Vendido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="margin-top: 1rem;">Salvar Imóvel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.removeItem('fabelle_admin_auth');
+            window.location.href = 'admin.html';
+        }
+
+        function renderTable() {
+            const properties = getProperties();
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            properties.forEach(prop => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${prop.id}</td>
+                        <td>${prop.title}</td>
+                        <td>${prop.location}</td>
+                        <td>${prop.price}</td>
+                        <td>${prop.status}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editProperty('${prop.id}')">Editar</button>
+                            <button class="action-btn delete-btn" onclick="removeProperty('${prop.id}')">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        const modal = document.getElementById('property-modal');
+        const form = document.getElementById('property-form');
+
+        function openModal() {
+            document.getElementById('modal-title').innerText = 'Adicionar Imóvel';
+            form.reset();
+            document.getElementById('prop-id').value = '';
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        function editProperty(id) {
+            const prop = getPropertyById(id);
+            if (!prop) return;
+
+            document.getElementById('modal-title').innerText = 'Editar Imóvel';
+            document.getElementById('prop-id').value = prop.id;
+            document.getElementById('prop-title').value = prop.title;
+            document.getElementById('prop-desc').value = prop.description;
+            document.getElementById('prop-price').value = prop.price;
+            document.getElementById('prop-location').value = prop.location;
+            document.getElementById('prop-area').value = prop.area;
+            document.getElementById('prop-bedrooms').value = prop.bedrooms;
+            document.getElementById('prop-bathrooms').value = prop.bathrooms;
+            document.getElementById('prop-parking').value = prop.parking;
+            document.getElementById('prop-features').value = prop.features;
+            document.getElementById('prop-image').value = prop.mainImage;
+            document.getElementById('prop-status').value = prop.status;
+
+            modal.classList.add('active');
+        }
+
+        function removeProperty(id) {
+            if (confirm('Tem certeza que deseja excluir este imóvel?')) {
+                deleteProperty(id);
+                renderTable();
+            }
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const prop = {
+                id: document.getElementById('prop-id').value,
+                title: document.getElementById('prop-title').value,
+                description: document.getElementById('prop-desc').value,
+                price: document.getElementById('prop-price').value,
+                location: document.getElementById('prop-location').value,
+                area: document.getElementById('prop-area').value,
+                bedrooms: document.getElementById('prop-bedrooms').value,
+                bathrooms: document.getElementById('prop-bathrooms').value,
+                parking: document.getElementById('prop-parking').value,
+                features: document.getElementById('prop-features').value,
+                mainImage: document.getElementById('prop-image').value,
+                status: document.getElementById('prop-status').value
+            };
+
+            saveProperty(prop);
+            closeModal();
+            renderTable();
+        });
+
+        // Init
+        renderTable();
+    </script>
+</body>
+</html>

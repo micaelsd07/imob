@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabelle | Imóveis de Alto Padrão</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        /* Specific Home Styles */
+        .hero-section {
+            position: relative;
+            height: 300vh; /* Scroll space for animation */
+        }
+        
+        .hero-canvas-container {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--color-black);
+            z-index: 1;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 2;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        /* Post Hero Content */
+        .home-content {
+            position: relative;
+            z-index: 10;
+            background-color: var(--color-bg);
+            padding: 8rem 0;
+        }
+
+        .intro-section {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 8rem;
+        }
+
+        .intro-section h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--color-black);
+        }
+
+        .intro-section p {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .featured-properties {
+            padding-top: 4rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 3rem;
+        }
+
+        .property-card {
+            display: block;
+            group: card;
+        }
+
+        .property-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            transition: transform 0.5s ease;
+        }
+
+        .property-image-wrapper {
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .property-card:hover .property-image {
+            transform: scale(1.05);
+        }
+
+        .property-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-location {
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .property-price {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--color-accent-dark);
+        }
+        
+        @media (max-width: 768px) {
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar dark-mode" id="navbar">
+        <a href="index.html" class="logo">FABELLE</a>
+        <nav class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="imoveis.html">Imóveis</a>
+            <a href="contato.html">Contato</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-canvas-container">
+            <canvas id="hero-canvas"></canvas>
+            <div class="scroll-down">Role para descobrir</div>
+        </div>
+    </section>
+
+    <main class="home-content">
+        <div class="container">
+            <section class="intro-section">
+                <h2>Onde o Luxo Encontra seu Espaço</h2>
+                <p>Na Fabelle, não vendemos apenas propriedades. Apresentamos obras de arte habitáveis. Nossa curadoria rigorosa seleciona apenas o ápice da arquitetura e do design para clientes que exigem o extraordinário.</p>
+                <a href="sobre.html" class="btn">Conheça a Fabelle</a>
+            </section>
+
+            <section class="featured-properties">
+                <div class="section-header">
+                    <h2>Imóveis em Destaque</h2>
+                    <a href="imoveis.html" class="btn">Ver Todos</a>
+                </div>
+                <div class="property-grid" id="featured-grid">
+                    <!-- Loaded via JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>FABELLE</h3>
+                    <p>Curadoria de imóveis de altíssimo padrão para um estilo de vida exclusivo.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Navegação</h4>
+                        <ul>
+                            <li><a href="index.html">Início</a></li>
+                            <li><a href="sobre.html">Sobre</a></li>
+                            <li><a href="imoveis.html">Imóveis</a></li>
+                            <li><a href="contato.html">Contato</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contato</h4>
+                        <ul>
+                            <li><a href="#">(11) 99999-9999</a></li>
+                            <li><a href="#">contato@fabelle.com.br</a></li>
+                            <li><a href="#">Av. Faria Lima, 3000 - SP</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Restrito</h4>
+                        <ul>
+                            <li><a href="admin.html">Painel Administrativo</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 Fabelle Imóveis de Alto Padrão. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script>
+        // Hero Canvas Animation Logic
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        const navbar = document.getElementById('navbar');
+        
+        const frameCount = 80;
+        const images = [];
+        let loadedImages = 0;
+        const currentFrame = { index: 0 };
+        let targetFrameIndex = 0;
+
+        const getImagePath = (index) => {
+            const num = index.toString().padStart(3, '0');
+            return `imagens/Luxury_house_built_from_start_202605122233_${num}.jpg`;
+        };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            render(Math.round(currentFrame.index));
+        }
+
+        function drawImageCover(img) {
+            if (!img) return;
+            const canvasRatio = canvas.width / canvas.height;
+            const imgRatio = img.width / img.height;
+            
+            let drawWidth = canvas.width;
+            let drawHeight = canvas.height;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            if (canvasRatio > imgRatio) {
+                drawHeight = canvas.width / imgRatio;
+                offsetY = (canvas.height - drawHeight) / 2;
+            } else {
+                drawWidth = canvas.height * imgRatio;
+                offsetX = (canvas.width - drawWidth) / 2;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+        }
+
+        function render(index) {
+            if (images[index] && images[index].complete) {
+                drawImageCover(images[index]);
+            }
+        }
+
+        for (let i = 0; i < frameCount; i++) {
+            const img = new Image();
+            img.src = getImagePath(i);
+            img.onload = () => {
+                loadedImages++;
+                if (i === 0) resizeCanvas();
+            };
+            images.push(img);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        window.addEventListener('scroll', () => {
+            // Calculate scroll inside hero section
+            const heroSection = document.querySelector('.hero-section');
+            const heroHeight = heroSection.offsetHeight - window.innerHeight;
+            const scrollFraction = Math.max(0, Math.min(1, window.scrollY / heroHeight));
+            
+            targetFrameIndex = Math.floor(scrollFraction * (frameCount - 1));
+
+            // Navbar styling based on scroll past hero
+            if (window.scrollY > window.innerHeight - 100) {
+                navbar.classList.add('scrolled');
+                navbar.classList.remove('dark-mode');
+            } else {
+                navbar.classList.remove('scrolled');
+                navbar.classList.add('dark-mode');
+            }
+        });
+
+        function loop() {
+            const ease = 0.08;
+            currentFrame.index += (targetFrameIndex - currentFrame.index) * ease;
+            render(Math.round(currentFrame.index));
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        // Load Featured Properties
+        const properties = getProperties().slice(0, 2); // Get up to 2
+        const grid = document.getElementById('featured-grid');
+        
+        properties.forEach(prop => {
+            grid.innerHTML += `
+                <a href="imovel.html?id=${prop.id}" class="property-card">
+                    <div class="property-image-wrapper">
+                        <img src="${prop.mainImage}" alt="${prop.title}" class="property-image">
+                    </div>
+                    <h3 class="property-title">${prop.title}</h3>
+                    <p class="property-location">${prop.location}</p>
+                    <p class="property-price">${prop.price}</p>
+                </a>
+            `;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre | Fabelle</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        .about-content {
+            padding: 4rem 0 8rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--color-black);
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--color-text-light);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 6rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 6rem;
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-accent-dark);
+        }
+
+        .value-card p {
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+            .about-content, .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar scrolled" id="navbar">
+        <a href="index.html" class="logo">FABELLE</a>
+        <nav class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="imoveis.html">Imóveis</a>
+            <a href="contato.html">Contato</a>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>A Essência Fabelle</h1>
+        <p>Elevando o padrão do mercado imobiliário com curadoria impecável e discrição absoluta.</p>
+    </div>
+
+    <main class="container">
+        <section class="about-content">
+            <div class="about-image-wrapper">
+                <!-- Using one of the construction images as an institutional image -->
+                <img src="imagens/Luxury_house_built_from_start_202605122233_035.jpg" alt="Arquitetura de luxo" class="about-image">
+            </div>
+            <div class="about-text">
+                <h2>Uma Nova Perspectiva Sobre Morar</h2>
+                <p>Fundada com a visão de redefinir o mercado de alto luxo, a Fabelle atua de forma seletiva, oferecendo as propriedades mais exclusivas do país. Nosso foco não está no volume de transações, mas na qualidade incomparável de cada ativo em nosso portfólio.</p>
+                <p>Nossa equipe é formada por especialistas que compreendem profundamente arquitetura, design e o estilo de vida que nossos clientes exigem. O resultado é uma experiência de aquisição fluida, segura e totalmente personalizada.</p>
+                <br>
+                <a href="contato.html" class="btn btn-solid">Fale Conosco</a>
+            </div>
+        </section>
+
+        <section class="values-grid">
+            <div class="value-card">
+                <h3>Curadoria Estrita</h3>
+                <p>Cada imóvel passa por uma avaliação criteriosa antes de entrar em nosso portfólio. Analisamos arquitetura, localização e potencial de valorização.</p>
+            </div>
+            <div class="value-card">
+                <h3>Discrição</h3>
+                <p>Entendemos a necessidade de privacidade de nossos clientes. Todas as negociações são conduzidas com sigilo absoluto e profissionalismo.</p>
+            </div>
+            <div class="value-card">
+                <h3>Atendimento Sob Medida</h3>
+                <p>Não existem dois clientes iguais. Nosso processo é moldado individualmente para atender às demandas específicas da sua família ou investimento.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0; padding-top: 0; border: none;">
+                &copy; 2026 Fabelle Imóveis de Alto Padrão. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

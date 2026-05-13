@@ -1,0 +1,262 @@
+:root {
+    --primary: #ffffff;
+    --secondary: rgba(255, 255, 255, 0.7);
+    --accent: #d4af37; /* Warm golden tone */
+    --bg-dark: #0a0a0a;
+    --font-main: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--primary);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+    /* Creating scrollable space for the animation. 
+       Adjust this height to make the scroll faster or slower. */
+    height: 500vh; 
+}
+
+/* Canvas styling */
+#hero-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Behind everything */
+    background-color: var(--bg-dark);
+}
+
+/* UI Overlay styling */
+.hero-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 4rem;
+    pointer-events: none; /* Let clicks pass through if needed, though we will enable it on specific elements */
+    z-index: 10;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+}
+
+.navbar nav a {
+    color: var(--primary);
+    text-decoration: none;
+    margin: 0 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.navbar nav a:hover {
+    color: var(--accent);
+}
+
+.nav-cta {
+    color: var(--bg-dark);
+    background-color: var(--primary);
+    padding: 0.6rem 1.5rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 30px;
+    transition: all 0.3s;
+}
+
+.nav-cta:hover {
+    background-color: var(--accent);
+    color: white;
+}
+
+/* Hero Content */
+.hero-content {
+    max-width: 600px;
+    pointer-events: auto;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hero-content h1 {
+    font-size: 4.5rem;
+    font-weight: 200;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.hero-content h1 span {
+    font-weight: 600;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: var(--secondary);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* Buttons */
+.cta-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    border-radius: 4px; /* Minimalist sharp/slightly rounded edges */
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--bg-dark);
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent);
+    color: white;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--secondary);
+    backdrop-filter: blur(5px);
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    transition: opacity 0.5s ease;
+}
+
+.scroll-text {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--secondary);
+}
+
+.scroll-line {
+    width: 1px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.scroll-progress {
+    width: 100%;
+    height: 50%;
+    background-color: var(--accent);
+    animation: scrollDown 2s infinite ease-in-out;
+}
+
+@keyframes scrollDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+}
+
+/* Final Section (Shows up at the bottom) */
+.final-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: none; /* Initially unclickable */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    z-index: 10;
+}
+
+.final-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto; /* Clickable when visible */
+}
+
+.final-content {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 4rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.final-content h2 {
+    font-size: 3rem;
+    font-weight: 200;
+    margin-bottom: 1rem;
+}
+
+.final-content p {
+    font-size: 1.2rem;
+    color: var(--secondary);
+    margin-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-overlay {
+        padding: 1.5rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+    
+    .navbar nav {
+        display: none; /* Hide links on mobile for simplicity in this demo */
+    }
+    
+    .cta-group {
+        flex-direction: column;
+    }
+}

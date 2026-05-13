@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Imóvel | Fabelle</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        .property-hero {
+            width: 100%;
+            height: 70vh;
+            background-color: var(--color-black);
+            margin-top: 80px; /* offset navbar */
+        }
+
+        .property-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .details-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            padding: 4rem 0 8rem;
+        }
+
+        .details-main h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .details-location {
+            color: var(--color-text-light);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .details-specs {
+            display: flex;
+            gap: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+
+        .spec-item {
+            text-align: center;
+        }
+
+        .spec-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .spec-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-light);
+        }
+
+        .details-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            margin-bottom: 3rem;
+        }
+
+        .details-features h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .details-features ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            color: var(--color-text-light);
+        }
+
+        .details-features li::before {
+            content: '•';
+            color: var(--color-accent);
+            margin-right: 10px;
+        }
+
+        .sidebar-card {
+            background-color: var(--color-white);
+            padding: 3rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 120px;
+        }
+
+        .sidebar-price {
+            font-size: 2.5rem;
+            font-family: var(--font-heading);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-status {
+            display: inline-block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.3rem 0.8rem;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-status.vendido {
+            background-color: var(--color-accent-dark);
+        }
+
+        .sidebar-card .btn {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .agent-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .agent-info p {
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .details-container { grid-template-columns: 1fr; }
+            .details-hero { height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar scrolled" id="navbar">
+        <a href="index.html" class="logo">FABELLE</a>
+        <nav class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="imoveis.html">Imóveis</a>
+            <a href="contato.html">Contato</a>
+        </nav>
+    </header>
+
+    <div class="property-hero" id="hero-img-container">
+        <!-- Rendered via JS -->
+    </div>
+
+    <main class="container">
+        <div class="details-container" id="details-content">
+            <!-- Rendered via JS -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0; padding-top: 0; border: none;">
+                &copy; 2026 Fabelle Imóveis de Alto Padrão. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const property = getPropertyById(id);
+
+            if (!property) {
+                document.getElementById('details-content').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+                        <h2>Imóvel não encontrado.</h2>
+                        <br><a href="imoveis.html" class="btn btn-solid">Voltar para Imóveis</a>
+                    </div>
+                `;
+                return;
+            }
+
+            document.title = `${property.title} | Fabelle`;
+
+            document.getElementById('hero-img-container').innerHTML = `
+                <img src="${property.mainImage || 'https://via.placeholder.com/1600x900?text=Sem+Imagem'}" alt="${property.title}">
+            `;
+
+            const isVendido = property.status.toLowerCase() === 'vendido';
+            const featuresList = property.features.split(',').map(f => `<li>${f.trim()}</li>`).join('');
+
+            document.getElementById('details-content').innerHTML = `
+                <div class="details-main">
+                    <h1>${property.title}</h1>
+                    <div class="details-location">${property.location}</div>
+                    
+                    <div class="details-specs">
+                        <div class="spec-item">
+                            <span class="spec-value">${property.area}</span>
+                            <span class="spec-label">Área Útil</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-value">${property.bedrooms}</span>
+                            <span class="spec-label">Quartos</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-value">${property.bathrooms}</span>
+                            <span class="spec-label">Banhos</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-value">${property.parking}</span>
+                            <span class="spec-label">Vagas</span>
+                        </div>
+                    </div>
+
+                    <div class="details-description">
+                        <p>${property.description.replace(/\n/g, '<br>')}</p>
+                    </div>
+
+                    <div class="details-features">
+                        <h3>Diferenciais</h3>
+                        <ul>
+                            ${featuresList}
+                        </ul>
+                    </div>
+                </div>
+
+                <aside class="details-sidebar">
+                    <div class="sidebar-card">
+                        <div class="sidebar-status ${isVendido ? 'vendido' : ''}">${property.status}</div>
+                        <div class="sidebar-price">${property.price}</div>
+                        
+                        <a href="contato.html?assunto=Interesse no imóvel ${property.title}" class="btn btn-solid">Agendar Visita</a>
+                        <a href="https://wa.me/5511999999999?text=Olá, tenho interesse no imóvel ${property.title}" target="_blank" class="btn">WhatsApp</a>
+
+                        <div class="agent-info">
+                            <p><strong>Especialista Fabelle</strong></p>
+                            <p>Atendimento exclusivo e sigiloso.</p>
+                        </div>
+                    </div>
+                </aside>
+            `;
+        });
+    </script>
+</body>
+</html>
