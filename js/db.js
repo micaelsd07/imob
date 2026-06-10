@@ -11,7 +11,7 @@ const defaultProperties = [
         bathrooms: '7',
         parking: '6',
         location: 'Alphaville, SP',
-        mainImage: 'imagens/Luxury_house_built_from_start_202605122233_079.jpg',
+        mainImage: 'imagens/Luxury_apartment_interior_to_ext…_202606101918_079.jpg',
         features: 'Piscina borda infinita, Home Theater, Adega climatizada, Spa privativo',
         status: 'Disponível'
     },
@@ -25,7 +25,7 @@ const defaultProperties = [
         bathrooms: '5',
         parking: '4',
         location: 'Fazenda Boa Vista, SP',
-        mainImage: 'imagens/Luxury_house_built_from_start_202605122233_050.jpg',
+        mainImage: 'imagens/Luxury_apartment_interior_to_ext…_202606101918_050.jpg',
         features: 'Espaço gourmet, Lareira, Sauna, Jardim projetado',
         status: 'Vendido'
     }
@@ -34,6 +34,9 @@ const defaultProperties = [
 function initDB() {
     const data = localStorage.getItem(DB_KEY);
     if (!data) {
+        localStorage.setItem(DB_KEY, JSON.stringify(defaultProperties));
+    } else if (data.includes('Luxury_house_built_from_start') || data.includes('Luxury_apartment_interior_to_ext.')) {
+        // Automatically migrate old/incorrect image paths to the new ones in local storage
         localStorage.setItem(DB_KEY, JSON.stringify(defaultProperties));
     }
 }

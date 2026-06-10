@@ -15,7 +15,7 @@ const finalSection = document.getElementById('final-section');
 // Function to get image path
 const getImagePath = (index) => {
     const num = index.toString().padStart(3, '0');
-    return `imagens/Luxury_house_built_from_start_202605122233_${num}.jpg`;
+    return `imagens/Luxury_apartment_interior_to_ext…_202606101918_${num}.jpg`;
 };
 
 // Resize Canvas to fit screen
