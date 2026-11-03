@@ -10,7 +10,8 @@ Sistema para imobiliárias criarem tours virtuais 360° dos imóveis.
    2. Fotos dos cômodos, com o guia de como fotografar, a ordem das fotos e a detecção automática do tipo (360°, panorâmica ou foto comum)
    3. Conectar cômodos: toque na porta da imagem e escolha para onde ela leva (ou use "Conectar automaticamente")
    4. Gerar e publicar: verificação, prévia, link, WhatsApp e código para incorporar no site
-4. **Tour público** (`/tour/:link`): o cliente gira a imagem e entra nos cômodos.
+4. **Equipe** (`/painel/equipe`): o admin cadastra corretores; todos podem trocar a senha.
+5. **Tour público** (`/tour/:link`): o cliente gira a imagem e entra nos cômodos.
 
 ## Tecnologias
 - Front-end: React, TypeScript, Vite e Three.js (visualizador 360°)

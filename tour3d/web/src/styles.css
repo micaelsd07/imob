@@ -311,3 +311,12 @@ input, select, textarea { font: inherit; color: inherit; }
   .tour-room { bottom: 118px; }
 }
 .guide-type .tag { justify-self: start; }
+
+/* Equipe */
+.team { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
+.members { display: grid; gap: 8px; margin-top: 12px; }
+.member { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; }
+.member-info { flex: 1; display: grid; min-width: 0; }
+.member-info small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.alert-ok { background: var(--green-soft); color: var(--green); }
+@media (max-width: 900px) { .team { grid-template-columns: 1fr; } }

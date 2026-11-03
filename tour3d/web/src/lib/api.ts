@@ -9,7 +9,7 @@ export type Property = {
   description?: string | null; published: boolean; start_room_id: number | null; rooms: Room[];
   room_count?: number; cover?: string | null; agency?: string;
 };
-export type User = { id: number; name: string; email: string; agency?: string };
+export type User = { id: number; name: string; email: string; agency?: string; role?: string; property_count?: number; created_at?: string };
 
 const TOKEN_KEY = 'tour3d_token';
 export const getToken = () => { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } };

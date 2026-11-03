@@ -11,6 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <nav className="topnav">
           <NavLink to="/painel" end>Imóveis</NavLink>
           <NavLink to="/painel/guia">Guia de fotos</NavLink>
+          <NavLink to="/painel/equipe">{user?.role === 'admin' ? 'Equipe' : 'Minha conta'}</NavLink>
         </nav>
         <div className="topbar-user">
           <div className="avatar">{user?.name?.[0] ?? '?'}</div>

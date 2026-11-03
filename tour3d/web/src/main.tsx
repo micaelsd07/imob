@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import PropertyEditor from './pages/PropertyEditor';
 import PublicTour from './pages/PublicTour';
 import Guide from './pages/Guide';
+import Team from './pages/Team';
 import './styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/painel" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/painel/equipe" element={<RequireAuth><Team /></RequireAuth>} />
           <Route path="/painel/guia" element={<RequireAuth><Guide /></RequireAuth>} />
           <Route path="/painel/imoveis/:id" element={<RequireAuth><PropertyEditor /></RequireAuth>} />
           <Route path="/tour/:slug" element={<PublicTour />} />

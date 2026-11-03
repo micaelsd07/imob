@@ -62,14 +62,21 @@ CREATE TABLE IF NOT EXISTS hotspots (
 );
 `);
 
+// Migração: papel do usuário (admin pode gerenciar a equipe)
+if (!db.prepare("SELECT 1 FROM pragma_table_info('users') WHERE name = 'role'").get())
+  db.exec("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'corretor'");
+
 // Usuário inicial (altere por variáveis de ambiente)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@fabelle.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'fabelle123';
 if (!db.prepare('SELECT id FROM users WHERE email = ?').get(ADMIN_EMAIL)) {
-  db.prepare('INSERT INTO users (name, email, password_hash, agency) VALUES (?,?,?,?)')
-    .run('Administrador', ADMIN_EMAIL, bcrypt.hashSync(ADMIN_PASSWORD, 10), 'Fabelle Imóveis');
+  db.prepare('INSERT INTO users (name, email, password_hash, agency, role) VALUES (?,?,?,?,?)')
+    .run('Administrador', ADMIN_EMAIL, bcrypt.hashSync(ADMIN_PASSWORD, 10), 'Fabelle Imóveis', 'admin');
   console.log(`Usuário criado: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
 }
+// Garante que exista ao menos um administrador
+if (!db.prepare("SELECT 1 FROM users WHERE role = 'admin'").get())
+  db.prepare("UPDATE users SET role = 'admin' WHERE email = ?").run(ADMIN_EMAIL);
 
 // ---------- Helpers ----------
 const app = express();
@@ -140,11 +147,53 @@ app.post('/api/auth/login', (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE email = ?').get(String(email || '').trim().toLowerCase());
   if (!u || !bcrypt.compareSync(String(password || ''), u.password_hash))
     return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
-  const user = { id: u.id, name: u.name, email: u.email, agency: u.agency };
+  const user = { id: u.id, name: u.name, email: u.email, agency: u.agency, role: u.role };
   res.json({ token: jwt.sign(user, JWT_SECRET, { expiresIn: '7d' }), user });
 });
 
 app.get('/api/auth/me', auth, (req, res) => res.json({ user: req.user }));
+
+app.put('/api/auth/password', auth, (req, res) => {
+  const { current, next } = req.body || {};
+  const u = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+  if (!u || !bcrypt.compareSync(String(current || ''), u.password_hash))
+    return res.status(400).json({ error: 'Senha atual incorreta.' });
+  if (String(next || '').length < 6) return res.status(400).json({ error: 'A nova senha precisa ter pelo menos 6 caracteres.' });
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(bcrypt.hashSync(String(next), 10), u.id);
+  res.json({ ok: true });
+});
+
+// ---------- Equipe (somente admin) ----------
+function adminOnly(req, res, next) {
+  const u = db.prepare('SELECT role FROM users WHERE id = ?').get(req.user.id);
+  if (u?.role !== 'admin') return res.status(403).json({ error: 'Apenas administradores.' });
+  next();
+}
+const listUsers = () => db.prepare(`SELECT u.id, u.name, u.email, u.agency, u.role, u.created_at,
+  (SELECT COUNT(*) FROM properties p WHERE p.user_id = u.id) AS property_count FROM users u ORDER BY u.id`).all();
+
+app.get('/api/users', auth, adminOnly, (_req, res) => res.json(listUsers()));
+
+app.post('/api/users', auth, adminOnly, (req, res) => {
+  const b = req.body || {};
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!b.name?.trim() || !/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ error: 'Informe nome e e-mail válidos.' });
+  if (String(b.password || '').length < 6) return res.status(400).json({ error: 'A senha precisa ter pelo menos 6 caracteres.' });
+  if (db.prepare('SELECT 1 FROM users WHERE email = ?').get(email)) return res.status(400).json({ error: 'Este e-mail já está cadastrado.' });
+  db.prepare('INSERT INTO users (name, email, password_hash, agency, role) VALUES (?,?,?,?,?)')
+    .run(b.name.trim(), email, bcrypt.hashSync(String(b.password), 10), b.agency || req.user.agency || null,
+      b.role === 'admin' ? 'admin' : 'corretor');
+  res.status(201).json(listUsers());
+});
+
+app.delete('/api/users/:id', auth, adminOnly, (req, res) => {
+  const id = Number(req.params.id);
+  if (id === req.user.id) return res.status(400).json({ error: 'Você não pode excluir a própria conta.' });
+  db.prepare('SELECT r.image FROM rooms r JOIN properties p ON p.id = r.property_id WHERE p.user_id = ?').all(id)
+    .forEach((r) => removeFile(r.image));
+  db.prepare('DELETE FROM users WHERE id = ?').run(id);
+  res.json(listUsers());
+});
 
 // ---------- Imóveis ----------
 app.get('/api/properties', auth, (req, res) => {
